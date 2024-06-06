@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Очередь</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #queue {
+      margin-bottom: 20px;
+    }
+    #current-person {
+      margin-bottom: 20px;
+    }
+    .remove-button {
+      cursor: pointer;
+      color: red;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Очередь</h1>
+  <div id="queue">
+    <h3>Текущая очередь:</h3>
+    <ul id="queue-list"></ul>
+  </div>
+  <div id="current-person">
+    <h3>Текущий человек:</h3>
+    <p id="current-person-name"></p>
+  </div>
+  <button onclick="addToQueue()">Встать в очередь</button>
+  <button onclick="nextPerson()">Следующий</button>
+
+  <script>
+    let queue = [];
+    let currentIndex = 0;
+
+    function addToQueue() {
+      let personName = prompt("Введите имя:");
+      if (personName) {
+        queue.push(personName);
+        updateQueue();
+      }
+    }
+
+    function removeFromQueue(index) {
+      queue.splice(index, 1);
+      if (currentIndex >= queue.length && currentIndex > 0) {
+        currentIndex--;
+      }
+      updateQueue();
+    }
+
+    function updateQueue() {
+      let queueList = document.getElementById('queue-list');
+      queueList.innerHTML = '';
+      queue.forEach((person, index) => {
+        let listItem = document.createElement('li');
+        listItem.textContent = `${index + 1}. ${person}`;
+        let removeButton = document.createElement('span');
+        removeButton.textContent = 'Удалить';
+        removeButton.className = 'remove-button';
+        removeButton.onclick = function() {
+          removeFromQueue(index);
+        };
+        listItem.appendChild(removeButton);
+        queueList.appendChild(listItem);
+      });
+      updateCurrentPerson();
+    }
+
+    function updateCurrentPerson() {
+      let currentPerson = document.getElementById('current-person-name');
+      if (queue.length === 0) {
+        currentPerson.textContent = 'Нет текущего человека';
+      } else {
+        currentPerson.textContent = queue[currentIndex];
+      }
+    }
+
+    function nextPerson() {
+      if (queue.length === 0) {
+        alert('Очередь пуста');
+        return;
+      }
+      currentIndex = (currentIndex + 1) % queue.length;
+      updateCurrentPerson();
+    }
+  </script>
+</body>
+</html>
+
